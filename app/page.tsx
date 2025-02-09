@@ -5,6 +5,10 @@ import { Card } from "@/components/ui/card";
 import { Sword, Anchor, PawPrint as Paw, ShoppingBag } from "lucide-react";
 import Link from "next/link";
 
+import beastArena from "@/public/asests/beast-arena.webp";
+import gladiators from "@/public/asests/gladiators.webp";
+import navalSpectacle from "@/public/asests/naval-spectacle.webp";
+
 const events = [
   {
     title: "Gladiator Championship",
@@ -12,8 +16,7 @@ const events = [
     date: "2025-04-15",
     icon: Sword,
     price: 100,
-    image:
-      "https://images.unsplash.com/photo-1608444962819-c2928b93fbf9?auto=format&fit=crop&q=80&w=1200",
+    image: gladiators.src,
   },
   {
     title: "Naval Spectacle",
@@ -21,8 +24,7 @@ const events = [
     date: "2025-04-22",
     icon: Anchor,
     price: 150,
-    image:
-      "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&q=80&w=1200",
+    image: navalSpectacle.src,
   },
   {
     title: "Beast Arena",
@@ -30,8 +32,7 @@ const events = [
     date: "2025-04-29",
     icon: Paw,
     price: 120,
-    image:
-      "https://images.unsplash.com/photo-1577507123028-ef53b3c80bb6?auto=format&fit=crop&q=80&w=1200",
+    image: beastArena.src,
   },
 ];
 
