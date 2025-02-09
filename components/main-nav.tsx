@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { Sword, ShoppingBag, User } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export function MainNav() {
   return (
@@ -13,7 +13,10 @@ export function MainNav() {
           <span>The Grand Coliseum</span>
         </Link>
         <nav className="flex items-center ml-auto gap-6">
-          <Link href="/events" className="text-sm font-medium hover:text-primary">
+          <Link
+            href="/events"
+            className="text-sm font-medium hover:text-primary"
+          >
             Events
           </Link>
           <Link href="/shop" className="text-sm font-medium hover:text-primary">
