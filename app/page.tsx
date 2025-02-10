@@ -8,6 +8,8 @@ import Link from "next/link";
 import beastArena from "@/public/asests/beast-arena.webp";
 import gladiators from "@/public/asests/gladiators.webp";
 import navalSpectacle from "@/public/asests/naval-spectacle.webp";
+import { getDictionary } from "@/translations/getDictionary";
+import { HeroSection } from "@/components/HeroSection/HeroSection";
 
 const events = [
   {
@@ -36,39 +38,12 @@ const events = [
   },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const dict = await getDictionary("en");
   return (
     <main className="min-h-screen bg-gradient-to-b from-background to-secondary">
       {/* Hero Section */}
-      <section className="relative h-[80vh] flex items-center justify-center">
-        <div
-          className="absolute inset-0 bg-cover bg-center z-0"
-          style={{
-            backgroundImage:
-              "url('https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&q=80&w=1920')",
-            backgroundBlendMode: "overlay",
-          }}
-        >
-          <div className="absolute inset-0 bg-black/50" />
-        </div>
-        <div className="relative z-10 text-center text-white px-4">
-          <h1 className="text-5xl md:text-7xl font-bold mb-6">
-            The Grand Coliseum
-          </h1>
-          <p className="text-xl md:text-2xl mb-8 max-w-2xl mx-auto">
-            Experience the thrill of ancient Rome with modern comfort
-          </p>
-          <div className="flex gap-4 justify-center">
-            <Button size="lg" asChild>
-              <Link href="/events">View Events</Link>
-            </Button>
-            <Button size="lg" variant="outline" asChild>
-              <Link href="/shop">Visit Shop</Link>
-            </Button>
-          </div>
-        </div>
-      </section>
-
+      <HeroSection />
       {/* Featured Events */}
       <section className="py-20 px-4">
         <div className="max-w-7xl mx-auto">
@@ -77,28 +52,30 @@ export default function Home() {
           </h2>
           <div className="grid md:grid-cols-3 gap-8">
             {events.map((event) => (
-              <Card key={event.title} className="overflow-hidden group">
-                <div className="relative h-48 overflow-hidden">
-                  <img
-                    src={event.image}
-                    alt={event.title}
-                    className="w-full h-full object-cover transition-transform group-hover:scale-105"
-                  />
-                </div>
-                <div className="p-6">
-                  <div className="flex items-center gap-2 mb-4">
-                    <event.icon className="w-5 h-5" />
-                    <h3 className="text-xl font-semibold">{event.title}</h3>
+              <Link href={`/events/${event.title}`} key={event.title}>
+                <Card key={event.title} className="overflow-hidden group">
+                  <div className="relative h-48 overflow-hidden">
+                    <img
+                      src={event.image}
+                      alt={event.title}
+                      className="w-full h-full object-cover transition-transform group-hover:scale-105"
+                    />
                   </div>
-                  <p className="text-muted-foreground mb-4">
-                    {event.description}
-                  </p>
-                  <div className="flex justify-between items-center">
-                    <span className="font-bold">${event.price}</span>
-                    <Button>Book Now</Button>
+                  <div className="p-6">
+                    <div className="flex items-center gap-2 mb-4">
+                      <event.icon className="w-5 h-5" />
+                      <h3 className="text-xl font-semibold">{event.title}</h3>
+                    </div>
+                    <p className="text-muted-foreground mb-4">
+                      {event.description}
+                    </p>
+                    <div className="flex justify-between items-center">
+                      <span className="font-bold">${event.price}</span>
+                      <Button>Book Now</Button>
+                    </div>
                   </div>
-                </div>
-              </Card>
+                </Card>
+              </Link>
             ))}
           </div>
         </div>

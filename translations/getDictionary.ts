@@ -6,6 +6,8 @@ const dictionaries = {
   en: () => import("./en/en.json").then((module) => module.default),
 };
 
+type DictionaryType = ReturnType<(typeof dictionaries)[Dictionary]>;
+
 export const getDictionary = async (locale: Dictionary) => {
   const languages: Set<Dictionary> = new Set<Dictionary>(["en"]);
   if (!languages.has(locale)) {

@@ -1,1 +1,12 @@
-{}
+{
+  "homePage": {
+    "heroSection": {
+      "title": "The Grand Coliseum",
+      "description": "Experience the thrill of ancient Rome with modern comfort",
+      "events": {
+        "upcoming": "Upcoming Events",
+        "viewAll": "View All Events"
+      }
+    }
+  }
+}
