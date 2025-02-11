@@ -8,5 +8,10 @@
         "viewAll": "View All Events"
       }
     }
+  },
+  "eventSection": {
+    "upcoming": "Upcoming Events",
+    "viewAll": "View All Events",
+    "bookNow": "Book Now"
   }
 }
