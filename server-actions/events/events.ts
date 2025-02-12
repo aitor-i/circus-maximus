@@ -1,5 +1,5 @@
 "use server";
-
+import { ObjectId } from "mongodb";
 import { getMongoClinet, getPointer } from "../mongo/mongo";
 
 interface Seat {
@@ -41,6 +41,99 @@ export async function getEvents() {
     setTimeout(async () => {
       await mongoClient.close();
       console.log("Db closed");
+    }, 4000);
+  }
+}
+
+export async function getEvent(id: string) {
+  try {
+    var mongoClient = await getMongoClinet();
+    await mongoClient.connect();
+    const pointer = await getPointer("events");
+
+    const eventId = new ObjectId(id);
+    const event = await pointer.findOne<Event>({ _id: eventId });
+    return event;
+  } catch (error: Error | unknown) {
+    console.log(Error.toString());
+    throw new Error("Erro geting events");
+  } finally {
+    setTimeout(async () => {
+      await mongoClient.close();
+      console.log("Db closed");
+    }, 4000);
+  }
+}
+
+export async function fixCorruptedEvents() {
+  try {
+    var mongoClient = await getMongoClinet();
+    await mongoClient.connect();
+    const pointer = await getPointer("events");
+
+    const corruptedEvents = await pointer
+      .find({
+        $or: [
+          { performers: { $type: "string" } },
+          { availableSeats: { $type: "string" } },
+        ],
+      })
+      .toArray();
+
+    let updatedCount = 0;
+
+    for (const event of corruptedEvents) {
+      const updatedFields: Record<string, any> = {};
+
+      // Helper function to fix JSON format
+      const fixJsonString = (str: string): string => {
+        return str
+          .replace(/'/g, '"') // Convert single quotes to double quotes
+          .replace(/\s/g, " "); // Remove any unintended whitespace issues
+      };
+
+      // Fix performers if it's a string
+      if (typeof event.performers === "string") {
+        try {
+          updatedFields.performers = JSON.parse(
+            fixJsonString(event.performers),
+          );
+        } catch (e) {
+          console.error(
+            `Skipping event ${event._id}: Invalid JSON in performers`,
+          );
+          continue;
+        }
+      }
+
+      // Fix availableSeats if it's a string
+      if (typeof event.availableSeats === "string") {
+        try {
+          updatedFields.availableSeats = JSON.parse(
+            fixJsonString(event.availableSeats),
+          );
+        } catch (e) {
+          console.error(
+            `Skipping event ${event._id}: Invalid JSON in availableSeats`,
+          );
+          continue;
+        }
+      }
+
+      // Update the document if any field was fixed
+      if (Object.keys(updatedFields).length > 0) {
+        await pointer.updateOne({ _id: event._id }, { $set: updatedFields });
+        updatedCount++;
+      }
+    }
+
+    console.log(`Fixed ${updatedCount} corrupted events.`);
+  } catch (error) {
+    console.error("Error fixing corrupted events:", error);
+  } finally {
+    setTimeout(async () => {
+      await mongoClient.close();
+      console.log("DB connection closed.");
     }, 4000);
   }
 }
