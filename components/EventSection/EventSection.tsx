@@ -1,18 +1,10 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Sword, Anchor, PawPrint as Paw, ShoppingBag } from "lucide-react";
 import Link from "next/link";
 import { getDictionary } from "@/translations/getDictionary";
-import beastArena from "@/public/asests/beast-arena.webp";
-import gladiators from "@/public/asests/gladiators.webp";
-import navalSpectacle from "@/public/asests/naval-spectacle.webp";
-import {
-  getEvents,
-  EventType,
-  Icon,
-  Event,
-} from "@/server-actions/events/events";
+import { getEvents } from "@/server-actions/events/events";
+import { getEventIcon, getEventImage, getEventTitle } from "@/lib/events";
 
 export default async function EventSection() {
   const dict = await getDictionary("en");
@@ -23,39 +15,6 @@ export default async function EventSection() {
     )
     .sort((a, b) => new Date(a.date) - new Date(b.date))
     .slice(0, 3);
-
-  const getEventImage = (eventType: EventType) => {
-    switch (eventType) {
-      case "beast":
-        return beastArena.src;
-      case "gladiator":
-        return gladiators.src;
-      case "naval":
-        return navalSpectacle.src;
-    }
-  };
-
-  const getEventIcon = (Icon: Icon) => {
-    switch (Icon) {
-      case "Gladiator":
-        return <Sword className="w-5 h-5" />;
-      case "Naval":
-        return <Anchor className="w-5 h-5" />;
-      case "Beast":
-        return <Paw className="w-5 h-5" />;
-    }
-  };
-
-  const getEventTitle = (event: Event) => {
-    switch (event.eventType) {
-      case "beast":
-        return "Beast Arena";
-      case "gladiator":
-        return "Gladiator Arena";
-      case "naval":
-        return "Naval Spectacle";
-    }
-  };
 
   return (
     <section className="py-20 px-4">
