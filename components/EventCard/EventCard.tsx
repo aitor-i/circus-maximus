@@ -14,7 +14,7 @@ export default async function EventCard({ event }: EventProps) {
   const dict = await getDictionary("en");
   return (
     <Link href={`/events/${event._id}`} key={event._id}>
-      <Card key={event.title} className="overflow-hidden group">
+      <Card key={event.title} className="overflow-hidden h-full group">
         <div className="relative h-48 overflow-hidden">
           <img
             src={getEventImage(event.eventType)}
