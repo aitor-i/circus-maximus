@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Event } from "@/server-actions/events/events";
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { ShoppingBag, ShoppingCartIcon } from "lucide-react";
 
 interface EventParams {
   params: { id: string };
@@ -56,8 +57,11 @@ export default async function Page({ params }: EventParams) {
                     <p>
                       {seat.type}({seat.available}):
                     </p>
-                    <p>{seat.price}€</p>
-                    <Button disabled={seat.available <= 0}>Buy</Button>
+                    <p>${seat.price}</p>
+                    <Button disabled={seat.available <= 0}>
+                      Add to Cart
+                      <ShoppingBag className="w-5 h-5 ml-2" />
+                    </Button>
                   </div>
                 ))}
               </div>
