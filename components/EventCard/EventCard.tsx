@@ -5,6 +5,7 @@ import Link from "next/link";
 import { getEventIcon, getEventImage, getEventTitle } from "@/lib/events";
 import { Event } from "@/server-actions/events/events";
 import { getDictionary } from "@/translations/getDictionary";
+import Image from "next/image";
 
 interface EventProps {
   event: Event;
@@ -16,7 +17,11 @@ export default async function EventCard({ event }: EventProps) {
     <Link href={`/events/event/${event._id}`} key={event._id}>
       <Card key={event.title} className="overflow-hidden h-full group">
         <div className="relative h-48 overflow-hidden">
-          <img
+          <Image
+            height={500}
+            width={1000}
+            placeholder="blur"
+            blurDataURL={getEventImage(event.eventType)}
             src={getEventImage(event.eventType)}
             alt={event.title}
             className="w-full h-full object-cover transition-transform group-hover:scale-105"
