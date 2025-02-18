@@ -58,7 +58,7 @@ export async function getEventsWithPagination(
     today.setHours(0, 0, 0, 0);
     // Count total events
     const totalEvents = await pointer.countDocuments({
-      eventDate: { $gte: today },
+      date: { $gte: today },
     });
 
     // Calculate total pages
@@ -67,7 +67,7 @@ export async function getEventsWithPagination(
     // Fetch paginated events
     const events = await pointer
       .find<Event>({ date: { $gte: today } }) // Only future events
-      .sort({ date: -1 }) // -1 for descending (newest first), 1 for ascending (oldest first)
+      .sort({ date: 1 }) // -1 for descending (newest first), 1 for ascending (oldest first)
       .skip((page - 1) * limit)
       .limit(limit)
       .toArray();
