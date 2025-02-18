@@ -45,6 +45,53 @@ export async function getEvents() {
   }
 }
 
+export async function getEventsWithPagination(
+  page: number = 1,
+  limit: number = 10,
+) {
+  try {
+    var mongoClient = await getMongoClinet();
+    await mongoClient.connect();
+    const pointer = await getPointer("events");
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    // Count total events
+    const totalEvents = await pointer.countDocuments({
+      eventDate: { $gte: today },
+    });
+
+    // Calculate total pages
+    const totalPages = Math.ceil(totalEvents / limit);
+
+    // Fetch paginated events
+    const events = await pointer
+      .find<Event>({ date: { $gte: today } }) // Only future events
+      .sort({ date: -1 }) // -1 for descending (newest first), 1 for ascending (oldest first)
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .toArray();
+
+    return {
+      events,
+      pagination: {
+        totalEvents,
+        totalPages,
+        currentPage: page,
+        limit,
+      },
+    };
+  } catch (error: unknown) {
+    console.error("Error getting events:", error);
+    throw new Error("Error getting events");
+  } finally {
+    setTimeout(async () => {
+      await mongoClient.close();
+      console.log("DB closed");
+    }, 4000);
+  }
+}
+
 export async function getEvent(id: string) {
   try {
     var mongoClient = await getMongoClinet();
