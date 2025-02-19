@@ -14,7 +14,7 @@ export default function CartItems() {
       {items.map((item) => (
         <div key={item.id} className="flex items-center gap-4 py-4 border-b">
           <Image
-            src={getEventImage(item.image) || "/placeholder.svg"}
+            src={getEventImage(item.image ?? "") || "/placeholder.svg"}
             alt={item.name}
             width={100}
             height={100}

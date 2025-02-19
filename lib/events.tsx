@@ -11,7 +11,7 @@ import {
   Event,
 } from "@/server-actions/events/events";
 
-export const getEventImage = (eventType: EventType) => {
+export const getEventImage = (eventType: EventType | string) => {
   switch (eventType) {
     case "beast":
       return beastArena.src;
@@ -19,6 +19,8 @@ export const getEventImage = (eventType: EventType) => {
       return gladiators.src;
     case "naval":
       return navalSpectacle.src;
+    default:
+      null;
   }
 };
 
