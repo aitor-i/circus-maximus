@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { MainNav } from "@/components/main-nav";
 import { Toaster } from "@/components/ui/toaster";
+import { ShoppingBagProvider } from "@/stores/shopingBagContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,16 +21,18 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <MainNav />
-          {children}
-          <Toaster />
-        </ThemeProvider>
+        <ShoppingBagProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <MainNav />
+            {children}
+            <Toaster />
+          </ThemeProvider>
+        </ShoppingBagProvider>
       </body>
     </html>
   );
