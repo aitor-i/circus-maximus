@@ -2,16 +2,14 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { useShoppingBag } from "@/stores/shopingBagContext";
 
 export default function CartSummary() {
-  const [subtotal, setSubtotal] = useState(0);
-  const shipping = 5.99;
-  const total = subtotal + shipping;
-
-  useEffect(() => {
-    // In a real application, you would calculate this based on the actual cart items
-    setSubtotal(69.97);
-  }, []);
+  const { items } = useShoppingBag();
+  const shipping = 0.0;
+  const total =
+    items.reduce((acc, item) => acc + item.price * item.quantity, 0) + shipping;
+  const subtotal = total + shipping;
 
   return (
     <div className="w-full lg:w-1/3 border bg-foreground text-muted p-6 rounded-lg">
