@@ -2,7 +2,7 @@
 import { ObjectId } from "mongodb";
 import { getMongoClinet, getPointer } from "../mongo/mongo";
 
-interface Seat {
+export interface Seat {
   type: string;
   price: number;
   available: number;
@@ -67,7 +67,7 @@ export async function getEventsWithPagination(
     // Fetch paginated events
     const events = await pointer
       .find<Event>({ date: { $gte: today } }) // Only future events
-      .sort({ date: 1 }) // -1 for descending (newest first), 1 for ascending (oldest first)
+      .sort({ date: -1 }) // -1 for descending (newest first), 1 for ascending (oldest first)
       .skip((page - 1) * limit)
       .limit(limit)
       .toArray();
