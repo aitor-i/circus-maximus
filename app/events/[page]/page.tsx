@@ -20,7 +20,7 @@ export default async function page({ params }: PageParams) {
   const dict = await getDictionary("en");
   const { events, pagination } = await getEventsWithPagination(
     Number(params.page),
-    10,
+    12,
   );
 
   return (
