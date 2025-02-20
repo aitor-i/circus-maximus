@@ -22,7 +22,7 @@ export default async function EventCard({ event }: EventProps) {
             width={1000}
             placeholder="blur"
             blurDataURL={getEventImage(event.eventType)}
-            src={getEventImage(event.eventType)}
+            src={getEventImage(event.eventType) ?? ""}
             alt={event.title}
             className="w-full h-full object-cover transition-transform group-hover:scale-105"
           />

@@ -14,7 +14,6 @@ export default async function EventSection() {
       (event) =>
         event.availableSeats.length > 0 && new Date(event.date) > new Date(),
     )
-    .sort((a, b) => new Date(a.date) - new Date(b.date))
     .slice(0, 3);
 
   return (
@@ -25,7 +24,7 @@ export default async function EventSection() {
         </h2>
         <div className="grid md:grid-cols-3 gap-8">
           {events.map((event) => (
-            <EventCard event={event} />
+            <EventCard key={event._id} event={event} />
           ))}
         </div>
       </div>
