@@ -13,7 +13,13 @@ interface PageParams {
 }
 
 export async function generateStaticParams() {
-  return ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
+  const { pagination } = await getEventsWithPagination();
+  const pageNumbers = Array.from(
+    { length: pagination.totalPages },
+    (_, i) => i + 1,
+  );
+
+  return pageNumbers;
 }
 
 export default async function page({ params }: PageParams) {
@@ -28,7 +34,7 @@ export default async function page({ params }: PageParams) {
       <h1>Events</h1>
       <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
         {events.map((event) => (
-          <EventCard event={event} />
+          <EventCard key={event._id} event={event} />
         ))}
       </div>
       <div className="py-8">

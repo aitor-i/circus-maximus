@@ -1,30 +1,34 @@
 import { getEventImage } from "@/lib/events";
-import { fixCorruptedEvents, getEvent } from "@/server-actions/events/events";
+import {
+  fixCorruptedEvents,
+  getEvent,
+  getEvents,
+} from "@/server-actions/events/events";
 import Image from "next/image";
 import { Event } from "@/server-actions/events/events";
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ShoppingBag, ShoppingCartIcon } from "lucide-react";
+import EventSeats from "@/components/EventSeats/EventSeats";
 
 interface EventParams {
   params: { id: string };
 }
 
 export async function generateStaticParams() {
-  return ["67aa6505d20f9176f7c671da"];
+  const events = await getEvents();
+  return events.map((event) => event._id);
 }
 
 export default async function Page({ params }: EventParams) {
   const event = await getEvent(params.id);
   if (!event) return notFound();
 
-  //  await fixCorruptedEvents();
-
   return (
     <div>
       <Image
         className="w-full h-[30vh] overflow-y-hidden object-cover object-bottom"
-        src={getEventImage(event.eventType)}
+        src={getEventImage(event.eventType!) ?? ""}
         alt={event.title}
         width={1500}
         height={1000}
@@ -50,19 +54,12 @@ export default async function Page({ params }: EventParams) {
               <h2 className="text-xl font-bold">Seats</h2>
               <div className="text-lg flex flex-col md:gap-3 gap-8">
                 {event.availableSeats?.map((seat) => (
-                  <div
-                    className="grid-cols-3 gap-2 md:grid flex  flex-col w-full"
+                  <EventSeats
                     key={seat.type}
-                  >
-                    <p>
-                      {seat.type}({seat.available}):
-                    </p>
-                    <p>${seat.price}</p>
-                    <Button disabled={seat.available <= 0}>
-                      Add to Cart
-                      <ShoppingBag className="w-5 h-5 ml-2" />
-                    </Button>
-                  </div>
+                    image={event.eventType}
+                    seat={seat}
+                    eventId={event._id!.toString()}
+                  />
                 ))}
               </div>
             </div>
