@@ -14,7 +14,7 @@ interface EventProps {
 export default async function EventCard({ event }: EventProps) {
   const dict = await getDictionary("en");
   return (
-    <Link href={`/events/event/${event._id}`} key={event._id}>
+    <Link href={`/events/event/${event._id}`} key={event._id?.toString()}>
       <Card key={event.title} className="overflow-hidden h-full group">
         <div className="relative h-48 overflow-hidden">
           <Image

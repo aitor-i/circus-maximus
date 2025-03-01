@@ -33,7 +33,7 @@ const stripePromise = loadStripe(
 
 export default function PaymentPage() {
   const [paymentMethod] = useState("card");
-  const { items, updateQuantity, removeItem } = useShoppingBag();
+  const { items, updateQuantity, removeItem, clearBag } = useShoppingBag();
   const months = 12;
   const startYear = 2025;
   const endYear = 2030;

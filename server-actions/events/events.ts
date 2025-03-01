@@ -1,6 +1,7 @@
 "use server";
 import { ObjectId } from "mongodb";
 import { getMongoClinet, getPointer } from "../mongo/mongo";
+import { ShoppingBagItem } from "@/stores/shopingBagContext";
 
 export interface Seat {
   type: string;
@@ -12,7 +13,7 @@ export type EventType = "gladiator" | "naval" | "beast";
 export type Icon = "Gladiator" | "Naval" | "Beast";
 
 export interface Event {
-  _id?: string;
+  _id?: ObjectId;
   title: string;
   description: string;
   date: string; // Format: 'YYYY-MM-DD'
@@ -33,6 +34,76 @@ export async function getEvents() {
     const pointer = await getPointer("events");
 
     const events = await pointer.find<Event>({}).toArray();
+    return events;
+  } catch (error: Error | unknown) {
+    console.log(Error.toString());
+    throw new Error("Erro geting events");
+  } finally {
+    setTimeout(async () => {
+      await mongoClient.close();
+      console.log("Db closed");
+    }, 4000);
+  }
+}
+
+export async function substractEventsFromDB(
+  events: Event[],
+  shoppingBag: ShoppingBagItem[],
+) {
+  try {
+    var mongoClient = await getMongoClinet();
+    await mongoClient.connect();
+    const pointer = await getPointer("events");
+
+    const eventsIds = events.map((event) => event._id!);
+
+    // For each event in the shopping bag, substract the quantity from the event' seat type
+    for (const item of shoppingBag) {
+      const event = events.find(
+        (event) => event._id!.toString() === item.id.split("_")[0],
+      );
+      if (!event) continue;
+
+      // Find the seat type in the event
+      const seatType = event.availableSeats.find(
+        (seat) => seat.type === item.name,
+      );
+      if (!seatType) continue;
+
+      // Substract the quantity from the seat type
+      seatType.available -= item.quantity;
+
+      // If the seat type is now empty, remove it from the event
+      if (seatType.available <= 0) {
+        event.availableSeats = event.availableSeats.filter(
+          (seat) => seat.type !== item.name,
+        );
+      }
+      await pointer.updateOne({ _id: event._id }, { $set: event });
+    }
+  } catch (error: Error | unknown) {
+    console.log(Error.toString());
+    throw new Error("Erro geting events");
+  } finally {
+    setTimeout(async () => {
+      await mongoClient.close();
+      console.log("Db closed");
+    }, 4000);
+  }
+}
+
+export async function getEventsFromById(eventIds: string[]) {
+  try {
+    var mongoClient = await getMongoClinet();
+    await mongoClient.connect();
+    const pointer = await getPointer("events");
+
+    const eventObjectsIds = eventIds.map((id) => new ObjectId(id));
+    console.log("IDS", eventObjectsIds);
+
+    const events = await pointer
+      .find<Event>({ _id: { $in: eventObjectsIds } })
+      .toArray();
     return events;
   } catch (error: Error | unknown) {
     console.log(Error.toString());

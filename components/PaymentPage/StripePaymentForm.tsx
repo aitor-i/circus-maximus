@@ -11,6 +11,7 @@ import {
   CardCvcElement,
 } from "@stripe/react-stripe-js";
 import { processPayment } from "@/server-actions/stripe/stripe";
+import { useShoppingBag } from "@/stores/shopingBagContext";
 
 const elementStyle = {
   style: {
@@ -32,6 +33,7 @@ const elementStyle = {
 export const CheckoutForm = () => {
   const stripe = useStripe();
   const elements = useElements();
+  const { items, updateQuantity, removeItem, clearBag } = useShoppingBag();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [cardBrand, setCardBrand] = useState<string | null>(null);
@@ -62,17 +64,20 @@ export const CheckoutForm = () => {
       if (!paymentMethod) throw new Error("Failed to create PaymentMethod");
 
       // TODO: Real price
+      const price = items.reduce((acc, item) => acc + item.price, 0);
       const { error, success, paymentIntentId } = await processPayment({
-        amount: 5000,
+        amount: price,
         currency: "usd",
         paymentMethodId: paymentMethod.id,
+        items,
+        email: "",
       });
 
       if (error) {
         setError(error.message || "Payment failed");
       } else if (success) {
+        clearBag();
         // TODO: Redirect to success page
-        // TODO: Handle substract of items from cart and form the DB
         alert("Payment successful!");
       }
     } catch (err) {

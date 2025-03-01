@@ -18,7 +18,7 @@ export default function EventSeats({ seat, eventId, image }: EventSeatsProps) {
 
   const onAddEventSeat = () => {
     addItem({
-      id: eventId + seat.type,
+      id: eventId + "_" + seat.type,
       name: seat.type,
       price: seat.price,
       image: image,
