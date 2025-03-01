@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useShoppingBag } from "@/stores/shopingBagContext";
+import Link from "next/link";
 
 export default function CartSummary() {
   const { items } = useShoppingBag();
@@ -30,9 +30,11 @@ export default function CartSummary() {
           </div>
         </div>
       </div>
-      <Button className="w-full text-secondary-foreground mt-6">
-        Proceed to Checkout
-      </Button>
+      <Link href="/checkout">
+        <Button className="w-full text-secondary-foreground mt-6">
+          Proceed to Checkout
+        </Button>
+      </Link>
     </div>
   );
 }
