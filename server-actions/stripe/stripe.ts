@@ -4,7 +4,11 @@ import { stripe } from "@/lib/stripe";
 import { ShoppingBagItem } from "@/stores/shopingBagContext";
 import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
-import { getEventsFromById, substractEventsFromDB } from "../events/events";
+import {
+  addEventsToUserByUserEmail,
+  getEventsFromById,
+  substractEventsFromDB,
+} from "../events/events";
 import { revalidatePath } from "next/cache";
 export interface PaymentIntent {
   paymentMethodId: string;
@@ -22,10 +26,11 @@ export async function processPayment({
   email,
 }: PaymentIntent) {
   try {
-    if (!paymentMethodId || !currency) {
+    if (!paymentMethodId || !currency || !email) {
       throw new Error("Invalid payment details.");
     }
 
+    const sopingBagItems = items?.copyWithin(0, 0, items.length);
     const itmeIds = items?.map((item) => item.id.split("_")[0].toString());
     const events = await getEventsFromById(itmeIds ?? []);
 
@@ -56,7 +61,7 @@ export async function processPayment({
     });
 
     await substractEventsFromDB(events, items ?? []);
-    // TODO: Add items to user's purchases
+    await addEventsToUserByUserEmail(email, events, sopingBagItems ?? []);
 
     revalidatePath("/events");
     return { success: true, paymentIntentId: paymentIntent.id };

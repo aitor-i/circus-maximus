@@ -12,6 +12,7 @@ import {
 } from "@stripe/react-stripe-js";
 import { processPayment } from "@/server-actions/stripe/stripe";
 import { useShoppingBag } from "@/stores/shopingBagContext";
+import { Input } from "@/components/ui/input";
 
 const elementStyle = {
   style: {
@@ -52,6 +53,14 @@ export const CheckoutForm = () => {
     setLoading(true);
     setError(null);
 
+    const formData = new FormData(event.target as HTMLFormElement);
+    const userEmail = formData.get("email")?.valueOf().toString();
+
+    if (!userEmail) {
+      setError("No email provided");
+      setLoading(false);
+    }
+
     const cardElement = elements.getElement(CardNumberElement);
     if (!cardElement) return;
 
@@ -70,7 +79,7 @@ export const CheckoutForm = () => {
         currency: "usd",
         paymentMethodId: paymentMethod.id,
         items,
-        email: "",
+        email: userEmail,
       });
 
       if (error) {
@@ -82,6 +91,8 @@ export const CheckoutForm = () => {
       }
     } catch (err) {
       setError("Unexpected error occurred");
+    } finally {
+      setLoading(false);
     }
 
     setLoading(false);
@@ -89,6 +100,20 @@ export const CheckoutForm = () => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      {/* 🔹 Card Number Input */}
+      <div className="grid gap-2">
+        <Label htmlFor="email">Email</Label>
+        <div>
+          <Input
+            placeholder="Enter your email"
+            className="relative border-2 placeholder:text-[#A0AEC0] border-secondary focus-visible:ring-none focus-visible:shadow-none text-[#0F2C59] rounded-md p-2 bg-white shadow-sm"
+            type="email"
+            id="email"
+            name="email"
+          />
+        </div>
+      </div>
+
       {/* 🔹 Card Number Input */}
       <div className="grid gap-2">
         <Label htmlFor="cardNumber">Card Number</Label>

@@ -46,6 +46,47 @@ export async function getEvents() {
   }
 }
 
+interface Purchase {
+  userEmail: string;
+  eventId: string;
+  seatType: string;
+  quantity: number;
+  type: "event";
+}
+
+export async function addEventsToUserByUserEmail(
+  userEmail: string,
+  events: Event[],
+  shoppingBag: ShoppingBagItem[],
+) {
+  try {
+    var mongoClient = await getMongoClinet();
+    await mongoClient.connect();
+    const pointer = await getPointer("purchases");
+    const purchases: Purchase[] = [];
+    shoppingBag.forEach((item) => {
+      const event = events.find(
+        (event) => event._id!.toString() === item.id.split("_")[0],
+      );
+      if (!event) return;
+      purchases.push({
+        userEmail,
+        eventId: event._id!.toString(),
+        seatType: item.name,
+        quantity: item.quantity,
+        type: "event",
+      });
+    });
+    const result = await pointer.insertMany(purchases);
+  } catch (Error: Error | unknown) {
+  } finally {
+    setTimeout(async () => {
+      await mongoClient.close();
+      console.log("Db closed");
+    }, 4000);
+  }
+}
+
 export async function substractEventsFromDB(
   events: Event[],
   shoppingBag: ShoppingBagItem[],

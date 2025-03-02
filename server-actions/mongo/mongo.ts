@@ -2,7 +2,7 @@
 import { MongoClient, MongoClientOptions, Db } from "mongodb";
 
 type DbName = "circus-maximus";
-type Collection = "events";
+type Collection = "events" | "users" | "purchases";
 
 const mongoClientOptions: MongoClientOptions = {};
 
